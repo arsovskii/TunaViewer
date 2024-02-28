@@ -134,6 +134,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ext\include\imgui\imgui.cpp" />
+    <ClCompile Include="ext\include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="ext\include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="ext\include\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="ext\include\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="ext\include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="ext\include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\Tuna\GUI\MainPage.cpp" />
     <ClCompile Include="src\Tuna\Image.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Tuna\Application.cpp" />
@@ -141,6 +149,17 @@
     <ClCompile Include="src\Tuna\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ext\include\imgui\imconfig.h" />
+    <ClInclude Include="ext\include\imgui\imgui.h" />
+    <ClInclude Include="ext\include\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="ext\include\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="ext\include\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="ext\include\imgui\imgui_internal.h" />
+    <ClInclude Include="ext\include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="ext\include\imgui\imstb_textedit.h" />
+    <ClInclude Include="ext\include\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\Tuna\GUI\MainPage.h" />
+    <ClInclude Include="src\Tuna\GUI\Page.h" />
     <ClInclude Include="src\Tuna\Image.h" />
     <ClInclude Include="src\Tuna\Application.h" />
     <ClInclude Include="ext\include\stb_image.h" />

@@ -13,5 +13,6 @@ Application::~Application()
 
 void Application::startApp()
 {
+	printf("Starting app..!\n");
 	mWindow->InitWindow();
 }

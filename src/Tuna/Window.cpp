@@ -5,6 +5,12 @@
 #include <iostream>
 
 #include "Image.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+
+#include "GUI/MainPage.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_internal.h"
 
 float aspectRatio = 1920.0 / 1080.0;
 
@@ -15,12 +21,40 @@ Window::Window(unsigned int width, unsigned int height, std::string title)
 	mHeight = height;
 	mWindowTitle = title;
 	mWindow = NULL;
+	mGuiPage = NULL;
+	mImage = NULL;
 }
 
 Window::~Window()
 {
+	delete mGuiPage;
 }
 
+
+void Window::initalize_gui()
+{
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+	io = ImGui::GetIO();
+	(void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	io.DisplaySize.x = static_cast<float>(mWidth);
+	io.DisplaySize.y = static_cast<float>(mHeight);
+	// Setup Platform/Renderer backends
+	ImGui_ImplGlfw_InitForOpenGL(mWindow, true);
+	ImGui_ImplOpenGL3_Init("#version 150");
+
+	printf("GUI init..");
+
+	mGuiPage = new MainPage();
+}
 
 void Window::InitWindow()
 {
@@ -41,8 +75,19 @@ void Window::InitWindow()
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return;
 	}
+	printf("Created a window\n");
+
+	initalize_gui();
+
+	mImage = new Image("slika.jpg", mWindow);
 
 	RenderLoop();
+
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(mWindow);
 	glfwTerminate();
 }
 
@@ -89,10 +134,21 @@ bool Window::InitGlad()
 	return true;
 }
 
+void Window::render_gui()
+{
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	mGuiPage->draw(this);
+
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 void Window::RenderLoop()
 {
-	Image image("slika.jpg", mWindow);//todo:premesti
-	aspectRatio = image.getWidth() / image.getHeight();
+	aspectRatio = mImage->getWidth() / mImage->getHeight();
+
 
 	while (!glfwWindowShouldClose(mWindow))
 	{
@@ -101,16 +157,21 @@ void Window::RenderLoop()
 		glClearColor(1.0f, 0.8431372549019608f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-	
-
 		glEnable(GL_SCISSOR_TEST);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glDisable(GL_SCISSOR_TEST);
 
-		image.drawImage();
 
-		
+		// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
 
+
+		mImage->drawImage();
+
+
+		render_gui();
+
+
+		glfwSwapInterval(1);
 		glfwSwapBuffers(mWindow);
 		glfwPollEvents();
 	}
@@ -150,6 +211,7 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height)
 
 	glViewport(lowerLeftCornerOfViewportX, lowerLeftCornerOfViewportY, widthOfViewport, heightOfViewport);
 }
+
 
 void Window::ProcessInput()
 {
