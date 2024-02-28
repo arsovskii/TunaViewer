@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "Image.h"
+
 
 Window::Window(unsigned int width, unsigned int height, std::string title)
 {
@@ -87,12 +89,17 @@ bool Window::InitGlad()
 
 void Window::RenderLoop()
 {
+	Image image("slika.jpg");//todo:premesti
+
 	while (!glfwWindowShouldClose(mWindow))
 	{
 		ProcessInput();
 
 		glClearColor(1.0f, 0.8431372549019608f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		image.drawImage();
+		
 
 		glfwSwapBuffers(mWindow);
 		glfwPollEvents();

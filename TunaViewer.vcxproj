@@ -134,14 +134,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Tuna\Image.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Tuna\Application.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Tuna\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Tuna\Image.h" />
     <ClInclude Include="src\Tuna\Application.h" />
+    <ClInclude Include="ext\include\stb_image.h" />
+    <ClInclude Include="src\Tuna\Shader.h" />
     <ClInclude Include="src\Tuna\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Tuna\shaders\ImageFrag.fs" />
+    <None Include="src\Tuna\shaders\ImageVertex.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="slika.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
