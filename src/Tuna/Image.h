@@ -7,6 +7,7 @@
 #include <glm/vec3.hpp>
 
 #include "Shader.h"
+#include "Window.h"
 
 
 struct Vertex
@@ -28,7 +29,7 @@ struct Texture
 class Image
 {
 public:
-	Image(std::string filePath);
+	Image(std::string filePath, GLFWwindow* window);
 
 	~Image();
 
@@ -36,8 +37,20 @@ public:
 
 	unsigned int VAO;
 
+	int getWidth()
+	{
+		return mWidth;
+	}
+	int getHeight()
+	{
+		return mHeight;
+	}
+
 private:
 	int mWidth, mHeight, mNrChannels;
+
+	GLFWwindow* mWindow;
+
 	unsigned int mTexture;
 	unsigned int VBO, EBO;
 
@@ -65,4 +78,5 @@ private:
 	void setup_texture();
 	void generate_buffers();
 	void setup_shader();
+	void rescale_image();
 };

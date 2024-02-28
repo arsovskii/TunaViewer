@@ -6,10 +6,11 @@
 
 #include "stb_image.h"
 
-Image::Image(std::string filePath)
+Image::Image(std::string filePath, GLFWwindow* window)
 {
 	stbi_set_flip_vertically_on_load(true);
 	mData = stbi_load(filePath.c_str(), &mWidth, &mHeight, &mNrChannels, 0);
+	mWindow = window;
 
 	if (!mData)
 	{
@@ -27,6 +28,7 @@ Image::~Image()
 void Image::drawImage()
 
 {
+
 	shader->use();
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -34,15 +36,14 @@ void Image::drawImage()
 
 void Image::setup_texture()
 {
-
 	glGenTextures(1, &mTexture);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mTexture);
 	// set the texture wrapping/filtering options (on the currently bound texture object)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	if (mData)
 	{
@@ -50,7 +51,6 @@ void Image::setup_texture()
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	stbi_image_free(mData);
-
 }
 
 void Image::generate_buffers()
@@ -83,8 +83,34 @@ void Image::setup_shader()
 	shader = new Shader("src/Tuna/shaders/ImageVertex.vs", "src/Tuna/shaders/ImageFrag.fs");
 }
 
+void Image::rescale_image()
+{
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	
+	// Calculate 80% of the original monitor's width and height
+	int max_width = static_cast<int>(0.8f * mode->width);
+	int max_height = static_cast<int>(0.8f * mode->height);
+
+	float scale = 1;
+	// Check if the image's width or height is larger than 80% of the monitor's width or height
+	if (mWidth > max_width || mHeight > max_height)
+	{
+		// Calculate the scale factor to fit the image within 80% of the monitor
+		scale = std::min(static_cast<float>(max_width) / mWidth, static_cast<float>(max_height) / mHeight);
+	
+		// Scale the image's width and height
+	}
+
+
+	glfwSetWindowSize(mWindow, mWidth*scale, mHeight*scale);
+	glViewport(0, 0, mWidth * scale, mHeight * scale);
+}
+
 void Image::setupImage()
 {
+	
+	rescale_image(); 
+
 	setup_texture();
 
 	for (int i = 0; i < 20; i += 5)

@@ -6,6 +6,8 @@
 
 #include "Image.h"
 
+float aspectRatio = 1920.0 / 1080.0;
+
 
 Window::Window(unsigned int width, unsigned int height, std::string title)
 {
@@ -89,7 +91,8 @@ bool Window::InitGlad()
 
 void Window::RenderLoop()
 {
-	Image image("slika.jpg");//todo:premesti
+	Image image("slika.jpg", mWindow);//todo:premesti
+	aspectRatio = image.getWidth() / image.getHeight();
 
 	while (!glfwWindowShouldClose(mWindow))
 	{
@@ -98,7 +101,14 @@ void Window::RenderLoop()
 		glClearColor(1.0f, 0.8431372549019608f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+	
+
+		glEnable(GL_SCISSOR_TEST);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glDisable(GL_SCISSOR_TEST);
+
 		image.drawImage();
+
 		
 
 		glfwSwapBuffers(mWindow);
@@ -108,7 +118,37 @@ void Window::RenderLoop()
 
 void Window::window_size_callback(GLFWwindow* window, int width, int height)
 {
-	glViewport(0, 0, width, height);
+	float desiredAspectRatio = aspectRatio;
+
+	int widthOfViewport, heightOfViewport;
+	int lowerLeftCornerOfViewportX = 0, lowerLeftCornerOfViewportY = 0; // Initialize these variables
+
+	float requiredHeightOfViewport = width / desiredAspectRatio; // Corrected calculation
+
+	if (requiredHeightOfViewport > height)
+	{
+		float requiredWidthOfViewport = height * desiredAspectRatio;
+		if (requiredWidthOfViewport > width)
+		{
+			std::cout << "Error: Couldn't find dimensions that preserve the aspect ratio\n";
+			widthOfViewport = width;
+			heightOfViewport = height;
+		}
+		else
+		{
+			widthOfViewport = static_cast<int>(requiredWidthOfViewport);
+			heightOfViewport = height;
+			lowerLeftCornerOfViewportX = static_cast<int>((width - widthOfViewport) / 2.0f);
+		}
+	}
+	else
+	{
+		widthOfViewport = width;
+		heightOfViewport = static_cast<int>(requiredHeightOfViewport);
+		lowerLeftCornerOfViewportY = static_cast<int>((height - heightOfViewport) / 2.0f);
+	}
+
+	glViewport(lowerLeftCornerOfViewportX, lowerLeftCornerOfViewportY, widthOfViewport, heightOfViewport);
 }
 
 void Window::ProcessInput()
