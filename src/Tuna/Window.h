@@ -26,6 +26,7 @@ public:
 		return io;
 	}
 
+	void changeImage(std::string path);
 private:
 	Image* mImage;
 	Page* mGuiPage;

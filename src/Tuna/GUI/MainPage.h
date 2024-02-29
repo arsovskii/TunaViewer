@@ -5,8 +5,13 @@ class MainPage :
     public Page
 {
 public:
-	MainPage();
+	MainPage(Window* window);
 	~MainPage() override;
-	void draw(Window* window) override;
+	void draw() override;
+
+private:
+	void openFileDialog();
+
+	Window* mWindow;
 };
 

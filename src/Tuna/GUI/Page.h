@@ -11,5 +11,5 @@ public:
 		
 	}
 
-	virtual void draw(Window* window) = 0;
+	virtual void draw() = 0;
 };

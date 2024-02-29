@@ -53,7 +53,7 @@ void Window::initalize_gui()
 
 	printf("GUI init..");
 
-	mGuiPage = new MainPage();
+	mGuiPage = new MainPage(this);
 }
 
 void Window::InitWindow()
@@ -140,7 +140,7 @@ void Window::render_gui()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	mGuiPage->draw(this);
+	mGuiPage->draw();
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -219,4 +219,14 @@ void Window::ProcessInput()
 	{
 		glfwSetWindowShouldClose(mWindow, true);
 	}
+}
+
+void Window::changeImage(std::string path)
+{
+	if(mImage != nullptr)
+	{
+		delete mImage;
+	}
+
+	mImage = new Image(path, mWindow);
 }
